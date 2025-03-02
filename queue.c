@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "list.h"
 
 #include "queue.h"
 
@@ -131,6 +132,22 @@ bool q_delete_mid(struct list_head *head)
 bool q_delete_dup(struct list_head *head)
 {
     // https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/
+    if (!head || list_empty(head))
+        return false;
+
+    bool isdup = false;
+    element_t *curr = NULL, *next = NULL;
+
+    list_for_each_entry_safe (curr, next, head, list) {
+        if (&next->list != head && !strcmp(curr->value, next->value)) {
+            list_del(&curr->list);
+            q_release_element(curr);
+        } else if (isdup) {
+            q_release_element(curr);
+            isdup = false;
+        }
+    }
+
     return true;
 }
 
