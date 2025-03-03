@@ -142,7 +142,9 @@ bool q_delete_dup(struct list_head *head)
         if (&next->list != head && !strcmp(curr->value, next->value)) {
             list_del(&curr->list);
             q_release_element(curr);
+            isdup = true;
         } else if (isdup) {
+            list_del(&curr->list);
             q_release_element(curr);
             isdup = false;
         }
