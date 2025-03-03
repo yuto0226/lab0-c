@@ -197,6 +197,12 @@ void q_reverseK(struct list_head *head, int k)
     }
 }
 
+static inline bool inorder(char *a, char *b, bool descend)
+{
+    int cmp = strcmp(a, b);
+    return ((cmp < 0) && !descend) || ((cmp > 0) && descend);
+}
+
 /* Sort elements of queue in ascending/descending order */
 void q_sort(struct list_head *head, bool descend) {}
 
