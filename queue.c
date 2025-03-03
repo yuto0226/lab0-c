@@ -203,6 +203,32 @@ static inline bool inorder(char *a, char *b, bool descend)
     return ((cmp < 0) && !descend) || ((cmp > 0) && descend);
 }
 
+static inline void q_merge_two(struct list_head *main,
+                               struct list_head *sub,
+                               bool descend)
+{
+    if (list_empty(main) && sub) {
+        list_splice(sub, main);
+        return;
+    } else if (!sub || list_empty(sub))
+        return;
+
+    struct list_head *curr = main->next;
+    element_t *curr_ele = list_entry(curr, element_t, list);
+    element_t *sub_ele = list_first_entry(sub, element_t, list);
+
+    while (curr != main && !list_empty(sub)) {
+        if (!inorder(curr_ele->value, sub_ele->value, descend)) {
+            list_move_tail(&sub_ele->list, curr);
+            sub_ele = list_first_entry(sub, element_t, list);
+        } else {
+            curr = curr->next;
+            curr_ele = list_entry(curr, element_t, list);
+        }
+    }
+    list_splice_tail_init(sub, main);
+}
+
 /* Sort elements of queue in ascending/descending order */
 void q_sort(struct list_head *head, bool descend) {}
 
