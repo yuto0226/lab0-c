@@ -1056,7 +1056,24 @@ static bool do_next(int argc, char *argv[])
     return q_show(0);
 }
 
-void q_shuffle(struct list_head *head) {}
+void q_shuffle(struct list_head *head)
+{
+    if (!head || list_empty(head))
+        return;
+
+    int range = q_size(head) - 1;
+    LIST_HEAD(tmp);
+    for (; range > 1; range--) {
+        struct list_head *curr = head->next;
+        int j = rand() % range;
+
+        for (int i = 0; i < j; i++)
+            curr = curr->next;
+
+        list_move_tail(curr, &tmp);
+    }
+    list_splice(&tmp, head);
+}
 
 static bool do_shuffle(int argc, char *argv[])
 {
