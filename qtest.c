@@ -1062,17 +1062,19 @@ void q_shuffle(struct list_head *head)
         return;
 
     int range = q_size(head) - 1;
-    LIST_HEAD(tmp);
-    for (; range > 1; range--) {
-        struct list_head *curr = head->next;
+    struct list_head *new = head->prev;
+    for (; range; range--) {
         int j = rand() % range;
-
+        struct list_head *old = head->next;
         for (int i = 0; i < j; i++)
-            curr = curr->next;
+            old = old->next;
 
-        list_move_tail(curr, &tmp);
+        // swap old and new
+        struct list_head *tmp = old->prev;
+        list_move(old, new);
+        list_move(new, tmp);
+        new = old->prev;
     }
-    list_splice(&tmp, head);
 }
 
 static bool do_shuffle(int argc, char *argv[])
